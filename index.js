@@ -6,6 +6,16 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 users = Array();
 
+
+const USER_IMAGES = [
+  'faces/face1.png',
+  'faces/face2.png',
+  'faces/face3.png',
+  'faces/face4.png',
+  'faces/face5.png',
+  'faces/face6.png',
+]
+
 function getIndex(id)
 {
   for (let i=0; i<users.length; i++)
@@ -18,24 +28,6 @@ function getIndex(id)
   return -1;
 }
 
-function generateID()
-{
-  for (let i=1; i<= users.length + 1; i++)
-  {
-    let found = true;
-    for (const user of users)
-    {
-      if (user.id == i)
-      {
-        found = false;
-        break;
-      }
-    }
-    if (found) return i;
-  }
-  
-  return -1;
-}
 
 function deleteUser(id)
 {
@@ -54,46 +46,43 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  let user_obj = {
+    "id": null,
+    "username": null,
+    "joined": new Date().toLocaleTimeString(),
+    "photo": USER_IMAGES[Math.floor(Math.random()*USER_IMAGES.length)]
+  }
 
-  let id = generateID();
-  let username;
-
-
-  users.push({
-    "id": id,
-    "username": ""
-  });
-
-  console.log('User nr %d connected', id); 
-  socket.emit('init', id, users);
+  console.log('New user connected'); 
+  socket.emit('init', users, user_obj.photo);
   console.log(users);
 
 
   socket.on('disconnect', () => {
-    deleteUser(id);
-    console.log("User nr %d disconnected", id);
+    deleteUser(user_obj.id);
+    socket.broadcast.emit('deleteUser', user_obj)
+    console.log("User %s disconnected", user_obj.username);
 
   });
 
-  socket.on('setUsername', (u) => {
-    username = u;
-    users[getIndex(id)].username = username;
+  socket.on('setDetails', (u, i) => {
+    user_obj.username = u;
+    user_obj.id = i;
 
-    for (const user in users)
-    {
-      if (user.id == id)
-      {
-        user.username = username;
-      }
-    }
-    console.log("User nr %d set username: %s", id, username);
+    users.push(user_obj);
+    console.log("User set username: %s", user_obj.id, user_obj.username);
     console.log(users);
-    
+    socket.broadcast.emit('newUser', user_obj);
 
   });
+
+  socket.on('message', (message) => {
+    console.log("%s send message to %s", message.sender.username, message.receiver.username);
+    console.log(message);
+    io.to(receiver.id).emit(message);
+  });
+
 });
-
-
 
 
 server.listen(3000, () => {
