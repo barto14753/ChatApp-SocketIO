@@ -1,37 +1,112 @@
 let username = prompt("Username: ");
 let socket = io();
 let user;
-let users;
+let users = Array();
 let focused_user;
+
+function getUser(user_id)
+{
+    console.log("getUser", user_id, users);
+    for (const user of users)
+    {
+        if (user.id === user_id) return user;
+    }
+
+    return null;
+}
 
 
 $('#button-addon2').click(() => {
     let content = $('#input').val();
-    if (content.length == 0) return;
     $('#input').val('');
+    console.log("MESSAGE_USER", focused_user);
+    if (content.length == 0 || !focused_user) return;
+    
+
 
     message = {
         "sender": user,
-        "reciever": focused_user,
+        "receiver": focused_user,
         "content": content, 
         "date": new Date().toLocaleTimeString()
     }
-
+    console.log("MESSAGE", message);
     socket.emit('message', message);
+    console.log("Send message");
     addSentMessage(message);
 });
 
-$('.msg-box').click(() => {alert("POP")});
-
-function onUserClick(event)
+function removeFocusOnUser()
 {
-    alert("CLICK");
+    let box = $('.messages-box-list').find(".active");
+    box.removeClass('active');
+    box.removeClass('text-white');
+    box.addClass('list-group-item-light');
+}
+
+function setFocusOnUser(user_id)
+{
+    focused_user = getUser(user_id);
+    console.log("Set new focused_user", focused_user);
+    let box = $('.messages-box-list').find("#" + user_id);
+    box.removeClass('list-group-item-light');
+    box.addClass('text-white');
+    box.addClass('active');
+}
+
+function onMessageBoxClick(user_id)
+{
+    removeFocusOnUser();
+    setFocusOnUser(user_id);
+    setChat(user_id);
+
 }
 
 
+$('#messages-box-template').click((event) => {
+    let maxIterations = 5;
+
+    let el = $(event.target);
+    let parent = el.parent();
+    while (!parent.hasClass("msg-box") && maxIterations > 0)
+    {
+        el = parent;
+        parent = el.parent();
+        maxIterations--;
+    }
+    let user_id = parent.attr("id");
+    onMessageBoxClick(user_id);
+})
+
+function removeCurrentChat()
+{
+    let old = $('.chat-boxes').find('.current-box');
+    old.removeClass('current-box');
+    old.addClass('d-none');
+}
+
+function disableBlankChat()
+{
+    if (!$('#blank-chat-box').hasClass('d-none'))
+    {
+        $('#blank-chat-box').addClass('d-none');
+    }
+}
+
 function setBlankChat()
 {
+    removeCurrentChat();
     $('#blank-chat-box').removeClass("d-none");
+}
+
+
+function setChat(user_id)
+{
+    disableBlankChat();
+    removeCurrentChat();
+    let new_box = $('.chat-boxes').find("#" + user_id);
+    new_box.removeClass('d-none');
+    new_box.addClass('current-box');
 }
 
 
@@ -39,48 +114,43 @@ function createChat(user_id)
 {
     let chat_box = $('.chat-boxes');
     let chat = $('.chat-box-template').clone(true);
+    chat.removeClass('chat-box-template');
     chat.attr("id", user_id);
+    console.log(chat);
     chat_box.append(chat);
-    
-    
+
 }
 
 function removeChat(user_id)
 {
-    let chat = $('.chat-box').find("#" + user_id.toString());
-    if (!chat.hasClass('d-none'))
-    {
-        setBlankChat();
-    }
+    let chat = $('.chat-boxes').find("#" + user_id);
     chat.remove();
 }
 
 function addRecievedMessage(message)
 {
-    let chat = $('.chat-box').find("#" + message.sender.id.toString());
+    let chat = $('.chat-boxes').find("#" + message.sender.id);
     let msg = $('.sender-template').clone();
-    msg.find('.msg-user-photo').attr("src", message.user.photo);
+    msg.find('.msg-user-photo').attr("src", message.sender.photo);
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
     chat.append(msg);
+    console.log("Added recived message", msg, chat);
 }
 
 function addSentMessage(message)
 {
-    let chat = $('.chat-box').find("#" + message.reciever.id.toString());
-    let msg = $('.reciever-template').clone();
+    let chat = $('.chat-boxes').find("#" + message.receiver.id);
+    let msg = $('.receiver-template').clone();
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
     chat.append(msg);
+    console.log("Added sent message", msg, chat);
 }
 
-
-
-function onNewUser(user)
+function createMessageBox(user)
 {
-    createChat(user.id);
-
-    let el = $('#messages-box-template').clone();
+    let el = $('#messages-box-template').clone(true);
     el.attr("id", user.id);
     el.removeClass('d-none');
     
@@ -95,27 +165,43 @@ function onNewUser(user)
 
     let messages_box = $('.messages-box-list')
     messages_box.append(el);
+}
 
-    
+
+
+function onNewUser(user)
+{
+    console.log("Create for user");
+    users.push(user);
+    createChat(user.id);
+    createMessageBox(user);
 }
 
 function onDeleteUser(user_id)
 {
-    $('.messages-box-list').find("#" + user_id.toString()).remove();
+    $('.messages-box-list').find("#" + user_id).remove();
+    removeChat(user_id);
+    if (focused_user && focused_user.id == user_id)
+    {
+        console.log("Remove focused user");
+        setBlankChat();
+        focused_user = null;
+
+    }
 }
 
 
-socket.on('init', function(u, photo) {
+socket.on('init', function(u, user_obj) {
     user = {
         "id": socket.id,
         "username": username,
-        "photo": photo
+        "joined": user_obj.joined,
+        "photo": user_obj.photo
     }
-    users = u;
     socket.emit("setDetails", username, socket.id, );
     $('#username').html("Hello <strong>" + username + "</strong>!");
 
-    for (const user of users) onNewUser(user);
+    for (const user of u) onNewUser(user);
 
   });
 
@@ -128,6 +214,7 @@ socket.on('init', function(u, photo) {
   });
 
   socket.on('message', function(message) {
+    console.log("Got message", message);
     addRecievedMessage(message);
   });
 

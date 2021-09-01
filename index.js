@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
   }
 
   console.log('New user connected'); 
-  socket.emit('init', users, user_obj.photo);
+  socket.emit('init', users, user_obj);
   console.log(users);
 
 
@@ -77,9 +77,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (message) => {
-    console.log("%s send message to %s", message.sender.username, message.receiver.username);
     console.log(message);
-    io.to(receiver.id).emit(message);
+    io.to(message.receiver.id).emit('message', message);
   });
 
 });
