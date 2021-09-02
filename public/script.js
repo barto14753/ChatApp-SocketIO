@@ -149,7 +149,7 @@ function addRecievedMessage(message)
     // highlighting message-box
     let msg_box = $('.messages-box-list').find("#" + message.sender.id);
     let msg_user = msg_box.find('.messages-box-username');
-    let msg_date = msg_box.find('.messages-box-date');
+    let msg_date = msg_box.find('.message-box-date');
     if (!msg_box.hasClass('font-weight-bold') && !chat.hasClass('current-box'));
     {
         msg_user.addClass('text-dark');
