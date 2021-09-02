@@ -144,14 +144,14 @@ function addRecievedMessage(message)
     msg.find('.msg-user-photo').attr("src", message.sender.photo);
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
+    msg.find('.last-message').text(message.sender.username + ": " + message.content);
     chat.append(msg);
 
     // highlighting message-box
     let msg_box = $('.messages-box-list').find("#" + message.sender.id);
     let msg_user = msg_box.find('.messages-box-username');
     let msg_date = msg_box.find('.message-box-date');
-    console.log(msg_box.hasClass('font-weight-bold'), chat.hasClass('current-box'));
-    if ((!msg_box.hasClass('font-weight-bold')) && (!chat.hasClass('current-box')));
+    if (!focused_user || (focused_user.id != message.sender.id));
     {
         msg_user.addClass('text-dark');
         msg_user.addClass('font-weight-bold');
@@ -169,6 +169,7 @@ function addSentMessage(message)
     msg.removeClass('receiver-template');
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
+    msg.find('.last-message').text("You: " + message.content);
     chat.append(msg);
 
     // scroll to bottom
