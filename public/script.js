@@ -105,6 +105,9 @@ function setChat(user_id)
     new_box.removeClass('d-none');
     new_box.addClass('current-box');
 
+    // scroll to bottom
+    new_box.scrollTop = new_box.scrollHeight;
+
     // remove higlighting (if exists)
     new_box.removeClass('font-weight-bold');
 }
