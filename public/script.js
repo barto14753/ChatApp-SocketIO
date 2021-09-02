@@ -114,7 +114,7 @@ function setChat(user_id)
     scrollToBottom(new_box);
 
     // remove higlighting (if exists)
-    msg_box.removeClass('font-weight-bold');
+    msg_box.find('.messages-box-username').removeClass('font-weight-bold');
 }
 
 
@@ -145,7 +145,7 @@ function addRecievedMessage(message)
     chat.append(msg);
 
     // highlighting message-box
-    let msg_box = $('.messages-box-list').find("#" + message.sender.id);
+    let msg_box = $('.messages-box-list').find("#" + message.sender.id).find('.messages-box-username');
     if (!msg_box.hasClass('font-weight-bold') && !chat.hasClass('current-box'));
     {
         msg_box.addClass('font-weight-bold');
