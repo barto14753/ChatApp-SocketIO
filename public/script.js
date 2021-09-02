@@ -115,7 +115,7 @@ function setChat(user_id)
 
     // remove higlighting (if exists)
     msg_box.find('.messages-box-username').removeClass('font-weight-bold');
-    msg_box.find('.messages-box-username').removeClass('text-primary');
+    msg_box.find('.messages-box-username').removeClass('text-dark');
 }
 
 
