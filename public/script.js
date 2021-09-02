@@ -115,6 +115,7 @@ function setChat(user_id)
 
     // remove higlighting (if exists)
     msg_box.find('.messages-box-username').removeClass('font-weight-bold');
+    msg_box.find('.messages-box-username').removeClass('text-primary');
 }
 
 
@@ -148,6 +149,7 @@ function addRecievedMessage(message)
     let msg_box = $('.messages-box-list').find("#" + message.sender.id).find('.messages-box-username');
     if (!msg_box.hasClass('font-weight-bold') && !chat.hasClass('current-box'));
     {
+        msg_box.addClass('text-primary');
         msg_box.addClass('font-weight-bold');
     }
 
