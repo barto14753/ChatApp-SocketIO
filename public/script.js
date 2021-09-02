@@ -6,7 +6,6 @@ let focused_user;
 
 function getUser(user_id)
 {
-    console.log("getUser", user_id, users);
     for (const user of users)
     {
         if (user.id === user_id) return user;
@@ -19,7 +18,6 @@ function getUser(user_id)
 $('#button-addon2').click(() => {
     let content = $('#input').val();
     $('#input').val('');
-    console.log("MESSAGE_USER", focused_user);
     if (content.length == 0 || !focused_user) return;
     
 
@@ -30,9 +28,7 @@ $('#button-addon2').click(() => {
         "content": content, 
         "date": new Date().toLocaleTimeString()
     }
-    console.log("MESSAGE", message);
     socket.emit('message', message);
-    console.log("Send message");
     addSentMessage(message);
 });
 
@@ -47,7 +43,6 @@ function removeFocusOnUser()
 function setFocusOnUser(user_id)
 {
     focused_user = getUser(user_id);
-    console.log("Set new focused_user", focused_user);
     let box = $('.messages-box-list').find("#" + user_id);
     box.removeClass('list-group-item-light');
     box.addClass('text-white');
@@ -116,7 +111,6 @@ function createChat(user_id)
     let chat = $('.chat-box-template').clone(true);
     chat.removeClass('chat-box-template');
     chat.attr("id", user_id);
-    console.log(chat);
     chat_box.append(chat);
 
 }
@@ -131,21 +125,21 @@ function addRecievedMessage(message)
 {
     let chat = $('.chat-boxes').find("#" + message.sender.id);
     let msg = $('.sender-template').clone();
+    msg.removeClass('sender-template');
     msg.find('.msg-user-photo').attr("src", message.sender.photo);
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
     chat.append(msg);
-    console.log("Added recived message", msg, chat);
 }
 
 function addSentMessage(message)
 {
     let chat = $('.chat-boxes').find("#" + message.receiver.id);
     let msg = $('.receiver-template').clone();
+    msg.removeClass('receiver-template');
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
     chat.append(msg);
-    console.log("Added sent message", msg, chat);
 }
 
 function createMessageBox(user)
@@ -171,7 +165,6 @@ function createMessageBox(user)
 
 function onNewUser(user)
 {
-    console.log("Create for user");
     users.push(user);
     createChat(user.id);
     createMessageBox(user);
@@ -183,7 +176,6 @@ function onDeleteUser(user_id)
     removeChat(user_id);
     if (focused_user && focused_user.id == user_id)
     {
-        console.log("Remove focused user");
         setBlankChat();
         focused_user = null;
 
@@ -214,7 +206,6 @@ socket.on('init', function(u, user_obj) {
   });
 
   socket.on('message', function(message) {
-    console.log("Got message", message);
     addRecievedMessage(message);
   });
 
