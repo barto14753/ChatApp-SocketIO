@@ -59,6 +59,10 @@ function onMessageBoxClick(user_id)
 
 }
 
+function scrollToBottom(el)
+{
+    el.scrollTop = el.scrollHeight;
+}
 
 $('#messages-box-template').click((event) => {
     let maxIterations = 5;
@@ -102,14 +106,15 @@ function setChat(user_id)
     disableBlankChat();
     removeCurrentChat();
     let new_box = $('.chat-boxes').find("#" + user_id);
+    let msg_box = $('.messages-box-list').find("#" + user_id);
     new_box.removeClass('d-none');
     new_box.addClass('current-box');
 
     // scroll to bottom
-    new_box.scrollTop = new_box.scrollHeight;
+    scrollToBottom(new_box);
 
     // remove higlighting (if exists)
-    new_box.removeClass('font-weight-bold');
+    msg_box.removeClass('font-weight-bold');
 }
 
 
@@ -140,11 +145,14 @@ function addRecievedMessage(message)
     chat.append(msg);
 
     // highlighting message-box
-    let new_box = $('.chat-boxes').find("#" + message.sender.id);
-    if (!new_box.hasClass('font-weight-bold'))
+    let msg_box = $('.messages-box-list').find("#" + message.sender.id);
+    if (!msg_box.hasClass('font-weight-bold') && !chat.hasClass('current-box'));
     {
-        new_box.addClass('font-weight-bold');
+        msg_box.addClass('font-weight-bold');
     }
+
+    // scroll to bottom
+    scrollToBottom(chat);
 }
 
 function addSentMessage(message)
@@ -155,6 +163,9 @@ function addSentMessage(message)
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
     chat.append(msg);
+
+    // scroll to bottom
+    scrollToBottom(chat);
 }
 
 function createMessageBox(user)
