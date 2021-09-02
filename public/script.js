@@ -114,10 +114,10 @@ function setChat(user_id)
     scrollToBottom(new_box);
 
     // remove higlighting (if exists)
-    msg_box.find('messages-box-username').removeClass('font-weight-bold');
-    msg_box.find('messages-box-username').removeClass('text-dark');
-    msg_box.find('message-box-date').removeClass('font-weight-bold');
-    msg_box.find('message-box-date').removeClass('text-dark');
+    msg_box.find('.messages-box-username').removeClass('font-weight-bold');
+    msg_box.find('.message-box-date').removeClass('font-weight-bold');
+    msg_box.find('.messages-box-username').removeClass('text-dark');
+    msg_box.find('.message-box-date').removeClass('text-dark');
 }
 
 
@@ -149,8 +149,8 @@ function addRecievedMessage(message)
 
     // highlighting message-box
     let msg_box = $('.messages-box-list').find("#" + message.sender.id);
-    let msg_user = msg.box.find('.messages-box-username');
-    let msg_date = msg_box.find('.message-box-date');
+    let msg_user = msg_box.find('.messages-box-username');
+    let msg_date = msg_box.find('.messages-box-date');
     if (!msg_box.hasClass('font-weight-bold') && !chat.hasClass('current-box'));
     {
         msg_user.addClass('text-dark');
