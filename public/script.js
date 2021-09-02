@@ -115,7 +115,6 @@ function setChat(user_id)
 
     // remove higlighting (if exists)
     msg_box.find('.messages-box-username').removeClass('font-weight-bold');
-    msg_box.find('.message-box-date').removeClass('font-weight-bold');
     msg_box.find('.messages-box-username').removeClass('text-dark');
     msg_box.find('.message-box-date').removeClass('text-dark');
 }
@@ -156,7 +155,6 @@ function addRecievedMessage(message)
         msg_user.addClass('text-dark');
         msg_user.addClass('font-weight-bold');
         msg_date.addClass('text-dark');
-        msg_date.addClass('font-weight-bold');
     }
 
     // scroll to bottom
