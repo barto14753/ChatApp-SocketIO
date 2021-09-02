@@ -139,17 +139,19 @@ function removeChat(user_id)
 function addRecievedMessage(message)
 {   // adding message to box
     let chat = $('.chat-boxes').find("#" + message.sender.id);
-    let msg_box = $('.messages-box').find("#" + message.sender.id);
     let msg = $('.sender-template').clone();
     msg.removeClass('sender-template');
     msg.find('.msg-user-photo').attr("src", message.sender.photo);
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
-    msg_box.find('.last-message').text(message.sender.username + ": " + message.content);
     chat.append(msg);
 
-    // highlighting message-box
     let msg_box = $('.messages-box-list').find("#" + message.sender.id);
+
+    // setting last message
+    msg_box.find('.last-message').text(message.sender.username + ": " + message.content);
+
+    // highlighting message-box
     let msg_user = msg_box.find('.messages-box-username');
     let msg_date = msg_box.find('.message-box-date');
     console.log(focused_user, message.sender.id, focused_user==null);
