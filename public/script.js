@@ -4,7 +4,7 @@ if (username.length == 0) username = "Anonymous"
 let socket = io();
 let user;
 let users = Array();
-let focused_user;
+let focused_user = null;
 
 function getUser(user_id)
 {
@@ -151,7 +151,7 @@ function addRecievedMessage(message)
     let msg_box = $('.messages-box-list').find("#" + message.sender.id);
     let msg_user = msg_box.find('.messages-box-username');
     let msg_date = msg_box.find('.message-box-date');
-    console.log(focused_user, message.sender.id, focused_user==null, focused_user.id != message.sender.id);
+    console.log(focused_user, message.sender.id, focused_user==null);
     if (!(focused_user == null) || (focused_user.id != message.sender.id));
     {
         msg_user.addClass('text-dark');
