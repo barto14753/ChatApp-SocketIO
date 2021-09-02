@@ -40,6 +40,8 @@ function removeFocusOnUser()
     box.removeClass('active');
     box.removeClass('text-white');
     box.addClass('list-group-item-light');
+    box.find('.last-message').addClass('text-muted');
+    box.find('.last-message').removeClass('text-light');
 }
 
 function setFocusOnUser(user_id)
@@ -49,6 +51,13 @@ function setFocusOnUser(user_id)
     box.removeClass('list-group-item-light');
     box.addClass('text-white');
     box.addClass('active');
+
+    // remove higlighting (if exists)
+    box.find('.messages-box-username').removeClass('font-weight-bold');
+    box.find('.messages-box-username').removeClass('text-dark');
+    box.find('.message-box-date').removeClass('text-dark');
+    box.find('.last-message').removeClass('text-muted');
+    box.find('.last-message').addClass('text-light');
 }
 
 function onMessageBoxClick(user_id)
@@ -106,17 +115,12 @@ function setChat(user_id)
     disableBlankChat();
     removeCurrentChat();
     let new_box = $('.chat-boxes').find("#" + user_id);
-    let msg_box = $('.messages-box-list').find("#" + user_id);
     new_box.removeClass('d-none');
     new_box.addClass('current-box');
 
     // scroll to bottom
     scrollToBottom(new_box);
 
-    // remove higlighting (if exists)
-    msg_box.find('.messages-box-username').removeClass('font-weight-bold');
-    msg_box.find('.messages-box-username').removeClass('text-dark');
-    msg_box.find('.message-box-date').removeClass('text-dark');
 }
 
 
