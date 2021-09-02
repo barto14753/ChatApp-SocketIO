@@ -169,7 +169,7 @@ function addRecievedMessage(message)
 function addSentMessage(message)
 {
     let chat = $('.chat-boxes').find("#" + message.receiver.id);
-    let msg_box = $('.messages-box').find("#" + message.sender.id);
+    let msg_box = $('.messages-box').find("#" + message.receiver.id);
     let msg = $('.receiver-template').clone();
     msg.removeClass('receiver-template');
     msg.find('.msg-content').text(message.content);
