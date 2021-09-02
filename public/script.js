@@ -154,6 +154,7 @@ function addRecievedMessage(message)
     console.log(focused_user, message.sender.id, focused_user==null);
     if ((focused_user == null) || (focused_user.id != message.sender.id));
     {
+        console.log(focused_user.id != message.sender.id, focused_user.id !== message.sender.id)
         msg_user.addClass('text-dark');
         msg_user.addClass('font-weight-bold');
         msg_date.addClass('text-dark');
