@@ -1,4 +1,6 @@
 let username = prompt("Username: ");
+if (username.length == 0) username = "Anonymous"
+
 let socket = io();
 let user;
 let users = Array();
@@ -102,6 +104,9 @@ function setChat(user_id)
     let new_box = $('.chat-boxes').find("#" + user_id);
     new_box.removeClass('d-none');
     new_box.addClass('current-box');
+
+    // remove higlighting (if exists)
+    new_box.removeClass('font-weight-bold');
 }
 
 
@@ -122,7 +127,7 @@ function removeChat(user_id)
 }
 
 function addRecievedMessage(message)
-{
+{   // adding message to box
     let chat = $('.chat-boxes').find("#" + message.sender.id);
     let msg = $('.sender-template').clone();
     msg.removeClass('sender-template');
@@ -130,6 +135,13 @@ function addRecievedMessage(message)
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
     chat.append(msg);
+
+    // highlighting message-box
+    let new_box = $('.chat-boxes').find("#" + message.sender.id);
+    if (!new_box.hasClass('font-weight-bold'))
+    {
+        new_box.addClass('font-weight-bold');
+    }
 }
 
 function addSentMessage(message)
