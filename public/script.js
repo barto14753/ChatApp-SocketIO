@@ -139,12 +139,13 @@ function removeChat(user_id)
 function addRecievedMessage(message)
 {   // adding message to box
     let chat = $('.chat-boxes').find("#" + message.sender.id);
+    let msg_box = $('.messages-box').find("#" + message.sender.id);
     let msg = $('.sender-template').clone();
     msg.removeClass('sender-template');
     msg.find('.msg-user-photo').attr("src", message.sender.photo);
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
-    msg.find('.last-message').text(message.sender.username + ": " + message.content);
+    msg_box.find('.last-message').text(message.sender.username + ": " + message.content);
     chat.append(msg);
 
     // highlighting message-box
@@ -154,7 +155,6 @@ function addRecievedMessage(message)
     console.log(focused_user, message.sender.id, focused_user==null);
     if ((focused_user == null) || (focused_user.id != message.sender.id))
     {
-        console.log(focused_user.id != message.sender.id, focused_user.id !== message.sender.id)
         msg_user.addClass('text-dark');
         msg_user.addClass('font-weight-bold');
         msg_date.addClass('text-dark');
@@ -167,11 +167,12 @@ function addRecievedMessage(message)
 function addSentMessage(message)
 {
     let chat = $('.chat-boxes').find("#" + message.receiver.id);
+    let msg_box = $('.messages-box').find("#" + message.sender.id);
     let msg = $('.receiver-template').clone();
     msg.removeClass('receiver-template');
     msg.find('.msg-content').text(message.content);
     msg.find('.msg-date').text(message.date);
-    msg.find('.last-message').text("You: " + message.content);
+    msg_box.find('.last-message').text("You: " + message.content);
     chat.append(msg);
 
     // scroll to bottom
